@@ -112,11 +112,13 @@
   const mobileMenuClose = document.getElementById('mobileMenuClose');
 
   function openMenu() {
+    if (!mobileMenu || !navToggle) return;
     mobileMenu.classList.add('is-open');
     navToggle.setAttribute('aria-expanded', 'true');
     document.body.style.overflow = 'hidden';
   }
   function closeMenu() {
+    if (!mobileMenu || !navToggle) return;
     mobileMenu.classList.remove('is-open');
     navToggle.setAttribute('aria-expanded', 'false');
     document.body.style.overflow = '';
@@ -246,4 +248,143 @@
   });
 
 
+})();
+
+/* ==========================================================================
+   Visor de la historieta: zoom, arrastre y cierre
+   ========================================================================== */
+(() => {
+  const opener = document.getElementById('comicOpen');
+  const lb = document.getElementById('comicViewer');
+  if (!opener || !lb) return;
+
+  const stage = document.getElementById('lbStage');
+  const img = document.getElementById('lbImg');
+  const btnIn = document.getElementById('lbIn');
+  const btnOut = document.getElementById('lbOut');
+  const btnReset = document.getElementById('lbReset');
+  const MIN = 1, MAX = 4, STEP = 0.5;
+  let scale = 1, x = 0, y = 0, lastFocus = null;
+  const pointers = new Map();
+  let pinchStart = null, drag = null;
+
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+
+  function bounds() {
+    // límites para que la imagen no se pierda fuera de la pantalla
+    const w = img.offsetWidth, h = img.offsetHeight;
+    const maxX = Math.max(0, (w * scale - w) / 2 + 0), maxY = Math.max(0, (h * scale - h) / 2 + 0);
+    return { w, h, maxX, maxY };
+  }
+  function apply(animate) {
+    const { w, h, maxX, maxY } = bounds();
+    // x,y = desplazamiento relativo al centro
+    x = clamp(x, -maxX, maxX); y = clamp(y, -maxY, maxY);
+    const tx = x - (w * scale - w) / 2, ty = y - (h * scale - h) / 2;
+    img.classList.toggle('is-animating', !!animate);
+    img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    btnReset.textContent = Math.round(scale * 100) + '%';
+    btnOut.disabled = scale <= MIN; btnIn.disabled = scale >= MAX;
+  }
+  // zoom manteniendo fijo el punto (cx, cy) de la pantalla
+  function zoomTo(next, cx, cy, animate) {
+    next = clamp(next, MIN, MAX);
+    const r = img.getBoundingClientRect();
+    if (cx == null) { cx = r.left + r.width / 2; cy = r.top + r.height / 2; }
+    const ratio = next / scale;
+    const centerX = r.left + r.width / 2, centerY = r.top + r.height / 2;
+    x += (cx - centerX) * (1 - ratio);
+    y += (cy - centerY) * (1 - ratio);
+    scale = next;
+    if (scale === MIN) { x = 0; y = 0; }
+    apply(animate);
+  }
+
+  function open(e) {
+    e.preventDefault();
+    lastFocus = document.activeElement;
+    img.src = opener.getAttribute('href');
+    scale = 1; x = 0; y = 0;
+    lb.hidden = false;
+    document.body.classList.add('lb-open');
+    apply(false);
+    lb.querySelector('.lb-close').focus();
+  }
+  function close() {
+    lb.hidden = true;
+    document.body.classList.remove('lb-open');
+    pointers.clear(); drag = null; pinchStart = null;
+    if (lastFocus) lastFocus.focus();
+  }
+
+  opener.addEventListener('click', open);
+  lb.querySelectorAll('[data-lb-close]').forEach(el => el.addEventListener('click', close));
+  btnIn.addEventListener('click', () => zoomTo(scale + STEP, null, null, true));
+  btnOut.addEventListener('click', () => zoomTo(scale - STEP, null, null, true));
+  btnReset.addEventListener('click', () => { scale = 1; x = 0; y = 0; apply(true); });
+
+  // clic en el fondo (fuera de la imagen) cierra
+  stage.addEventListener('click', (e) => { if (e.target === stage && !stage.dataset.moved) close(); });
+
+  document.addEventListener('keydown', (e) => {
+    if (lb.hidden) return;
+    if (e.key === 'Escape') close();
+    else if (e.key === '+' || e.key === '=') zoomTo(scale + STEP, null, null, true);
+    else if (e.key === '-') zoomTo(scale - STEP, null, null, true);
+    else if (e.key === '0') { scale = 1; x = 0; y = 0; apply(true); }
+    else if (e.key === 'Tab') { // mantener el foco dentro del visor
+      const f = [...lb.querySelectorAll('button:not(:disabled)')];
+      const i = f.indexOf(document.activeElement);
+      if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); }
+      else if (!e.shiftKey && i === f.length - 1) { e.preventDefault(); f[0].focus(); }
+    }
+  });
+
+  stage.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const factor = Math.exp(-e.deltaY * 0.0015);
+    zoomTo(scale * factor, e.clientX, e.clientY, false);
+  }, { passive: false });
+
+  img.addEventListener('dblclick', (e) => {
+    if (scale > 1) { scale = 1; x = 0; y = 0; apply(true); }
+    else zoomTo(2, e.clientX, e.clientY, true);
+  });
+
+  stage.addEventListener('pointerdown', (e) => {
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    stage.setPointerCapture(e.pointerId);
+    delete stage.dataset.moved;
+    if (pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      pinchStart = { d: Math.hypot(a.x - b.x, a.y - b.y), s: scale };
+      drag = null;
+    } else {
+      drag = { sx: e.clientX, sy: e.clientY, ox: x, oy: y };
+    }
+  });
+  stage.addEventListener('pointermove', (e) => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pinchStart && pointers.size === 2) {
+      const [a, b] = [...pointers.values()];
+      const d = Math.hypot(a.x - b.x, a.y - b.y);
+      zoomTo(pinchStart.s * d / pinchStart.d, (a.x + b.x) / 2, (a.y + b.y) / 2, false);
+      stage.dataset.moved = '1';
+    } else if (drag && scale > 1) {
+      const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+      if (Math.abs(dx) + Math.abs(dy) > 3) { stage.dataset.moved = '1'; stage.classList.add('is-dragging'); }
+      x = drag.ox + dx; y = drag.oy + dy;
+      apply(false);
+    }
+  });
+  const end = (e) => {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinchStart = null;
+    if (pointers.size === 0) { drag = null; stage.classList.remove('is-dragging'); }
+    else if (pointers.size === 1) { const p = [...pointers.values()][0]; drag = { sx: p.x, sy: p.y, ox: x, oy: y }; }
+  };
+  stage.addEventListener('pointerup', end);
+  stage.addEventListener('pointercancel', end);
+  window.addEventListener('resize', () => { if (!lb.hidden) apply(false); });
 })();
