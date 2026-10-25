@@ -406,7 +406,7 @@
   if (!diagram || !svg || !hub) return;
   const NS = 'http://www.w3.org/2000/svg';
   const colors = ['#ea878a', '#69a9a9', '#ff8e4b'];
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = false;
 
   function draw() {
     svg.innerHTML = '';
@@ -475,7 +475,7 @@
     pct: li.querySelector('.bf-pct'),
     to: parseFloat(li.querySelector('.bf-pct').dataset.to) || 0,
   }));
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = false;
   const clamp = (v) => Math.min(1, Math.max(0, v));
   const ease = (t) => 1 - (1 - t) * (1 - t);
 
@@ -507,7 +507,7 @@
   const num = document.querySelector('.hs-count');
   if (!vis || !num) return;
   const to = parseInt(num.dataset.to, 10) || 0;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (false) return;
   num.textContent = '0';
   const run = () => {
     const t0 = performance.now() + 1000, dur = 1600; // acompaña al anillo
@@ -537,7 +537,7 @@
   const ghost = $('simGhost'), toast = $('simToast'), done = $('simDone');
   const steps = [...modal.querySelectorAll('.sim-steps li')];
   const items = [...list.querySelectorAll('.sim-item')];
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = false;
   let picked = [], lastFocus = null, toastTimer = null, hintOn = false;
 
   /* ---------- estado y pasos ---------- */
@@ -601,7 +601,7 @@
   let drag = null, suppressClick = false;
   items.forEach((it) => {
     it.addEventListener('pointerdown', (e) => {
-      if (it.classList.contains('is-picked') || e.button > 0) return;
+      if (it.classList.contains('is-picked') || e.button > 0 || e.pointerType === 'touch') return; // en táctil se suma tocando
       drag = { it, id: it.dataset.id, x0: e.clientX, y0: e.clientY, active: false, el: null, pid: e.pointerId };
     });
     it.addEventListener('click', () => {
@@ -664,6 +664,7 @@
     const b = document.createElement('b'); b.textContent = '«' + nameIn.value.trim() + '»';
     s.append(b, ` · ${formatIn.value} · ${n} ${n === 1 ? 'contenido' : 'contenidos'} · ${q} ${q === 1 ? 'clase' : 'clases'}. Ya quedó ubicada en el calendario: martes de 08:00 a 09:30.`);
     done.hidden = false; updateSteps();
+    clearTimeout(toastTimer); toast.classList.remove('is-on');
     steps.forEach((li) => { li.classList.add('is-done'); li.classList.remove('is-current'); });
     $('simAgain').focus();
   });

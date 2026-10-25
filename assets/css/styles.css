@@ -1132,12 +1132,7 @@ select.login-field:valid { color: var(--navy); }
   margin: 0 auto 1rem;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal="comic"] { clip-path: none; transform: none; transition: opacity .3s; }
-  .comic-frame, .comic-frame img { transition: none; }
-  .comic-frame:hover, [data-reveal="comic"].is-visible:hover { transform: none; }
-  .comic-frame:hover img { transform: none; }
-}
+
 
 .quote-block{
   background: var(--navy);
@@ -1611,7 +1606,7 @@ section[id]{scroll-margin-top:96px;}
   opacity:1;transform:translate(-50%,0);
 }
 .dim-list li.has-tip:focus-visible{box-shadow:0 0 0 2px var(--accent);}
-@media (prefers-reduced-motion:reduce){ .dim-list li.has-tip::after,.dim-list li.has-tip::before{transition:none;} }
+
 
 /* ==========================================================================
    Dimensiones (rediseño)
@@ -1735,10 +1730,7 @@ section[id]{scroll-margin-top:96px;}
 @media (max-width: 420px) {
   .dx-items { grid-template-columns: 1fr; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .dx-card[data-reveal] .dx-c, .dx-card[data-reveal] .dx-fill { transform: none; transition: none; }
-  .dx-c.o { animation: none; }
-}
+
 
 /* ==========================================================================
    Portada (rediseño)
@@ -1814,9 +1806,7 @@ section[id]{scroll-margin-top:96px;}
   .hx-tablet { max-width: 520px; }
   .hx-deco { opacity: .6; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .hx-globe, .hx-node, .hx-tablet { animation: none; }
-}
+
 
 /* Tooltips de Dimensiones */
 .dx-item.has-tip { position: relative; cursor: help; outline: none; }
@@ -1848,9 +1838,7 @@ section[id]{scroll-margin-top:96px;}
   opacity: 1; transform: translate(-50%, 0);
 }
 .dx-item.has-tip:focus-visible { box-shadow: 0 0 0 2px var(--ac); }
-@media (prefers-reduced-motion: reduce) {
-  .dx-item.has-tip::after, .dx-item.has-tip::before { transition: none; }
-}
+
 
 /* ==========================================================================
    Visor de la historieta (zoom)
@@ -1931,10 +1919,7 @@ body.lb-open { overflow: hidden; }
   .lb-stage img { max-width: 96vw; max-height: 70vh; border-radius: 8px; }
   .lb-help { left: 16px; transform: none; max-width: calc(100vw - 96px); border-radius: 14px; font-size: .72rem; text-align: left; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .lb-backdrop, .lb-stage img { animation: none; }
-  .lb-stage img.is-animating { transition: none; }
-}
+
 
 /* ==========================================================================
    Header + Portada (versión "Planificar, acompañar y mejorar")
@@ -2072,7 +2057,7 @@ header.nav .btn-coral svg { width: 18px; height: 18px; }
 @media (max-width: 480px) {
   .hp-btn { height: 54px; padding: 0 24px; font-size: 16px; flex: 1 1 auto; }
 }
-@media (prefers-reduced-motion: reduce) { .hp-visual img { animation: none; } }
+
 
 /* ==========================================================================
    ¿Por qué? — de archivos sueltos a un mismo lugar
@@ -2225,10 +2210,7 @@ header.nav .btn-coral svg { width: 18px; height: 18px; }
   .pq-hub { justify-self: center; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .pq-src, .pq-logo img, .pq-ring, .pq-lines .ln { animation: none; }
-  .pq-lines .spark { display: none; }
-}
+
 
 /* Portada: el título arranca a la altura del calendario (14% del alto de la
    imagen, debajo del ícono que sobresale); título, bajada y botones van juntos. */
@@ -2368,9 +2350,7 @@ header.nav .btn-coral svg { width: 18px; height: 18px; }
   .bf-bars li { grid-template-columns: 5.6rem 1fr 2.6rem; gap: .6rem; }
   .bf-metric-head { flex-direction: column; gap: .2rem; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .bf-shot, .bf-shot img, .bf-zoom { transition: none; }
-}
+
 
 /* ==========================================================================
    ¿Para quién? — Para toda la institución
@@ -2427,7 +2407,7 @@ header.nav .btn-coral svg { width: 18px; height: 18px; }
 
 @media (max-width: 1024px) { .pw-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px)  { .pw-grid { grid-template-columns: 1fr; } .pw-card { min-height: 0; } }
-@media (prefers-reduced-motion: reduce) { .pw-card { transition: none; } .pw-card:hover { transform: none; } }
+
 
 /* ==========================================================================
    Quiénes somos — cards con foto chica y nombre al lado
@@ -2484,7 +2464,7 @@ header.nav .btn-coral svg { width: 18px; height: 18px; }
 }
 
 @media (max-width: 960px) { .qs-grid { grid-template-columns: 1fr; max-width: 560px; } }
-@media (prefers-reduced-motion: reduce) { .qs-card { transition: none; } .qs-card:hover { transform: none; } }
+
 
 /* ==========================================================================
    Franja "Monitorear es acompañar" (azul Sabium en versión pastel)
@@ -2636,10 +2616,7 @@ textarea.ct-field { height: auto; min-height: 84px; padding: .8rem 1rem; resize:
 @keyframes hsBob { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-8px) rotate(-2deg); } }
 @keyframes hsPulse { 0%, 100% { stroke-opacity: 1; } 50% { stroke-opacity: .35; } }
 
-@media (prefers-reduced-motion: reduce) {
-  .hp-visual .hs, .hs-arrow, .hp-visual.is-visible .hs-doc, .hp-visual.is-visible #hs-nueva-clase > rect:nth-child(2) { animation: none; }
-  .hs-doc, .hs-arrow, #hs-nueva-clase, #hs-cobertura, .hs-arc, .hs-bar { transition: none; }
-}
+
 
 /* ==========================================================================
    Gestión: acciones bajo la captura (lupa + probar simulador)
@@ -2858,10 +2835,7 @@ body.sim-open { overflow: hidden; }
   .sim-btn { flex: 1 1 100%; }
   .sim-steps li { font-size: .74rem; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .sim-ghost.is-hint, .bf-try { animation: none; }
-  .sim-chosen li, .sim-done-card, .sim-dialog { animation: none; }
-}
+
 
 .sim-drop-empty[hidden] { display: none; }
 @media (max-width: 860px) {
@@ -2870,3 +2844,46 @@ body.sim-open { overflow: hidden; }
 
 .sim-btn-link { background: transparent; color: color-mix(in srgb, var(--navy) 70%, transparent); border-color: transparent; }
 .sim-btn-link:hover { color: var(--navy); background: #f1f2f6; }
+
+/* Simulador en celular: primero título/formato/seleccionados, debajo los contenidos; se suman tocando */
+.sim-txt-mob { display: none; }
+@media (max-width: 860px) {
+  .sim-right { order: -1; }
+  .sim-txt-desk { display: none; }
+  .sim-txt-mob { display: inline; }
+  .sim-drop { min-height: 96px; }
+  .sim-drop-empty { padding-top: .4rem; text-align: center; }
+  .sim-item { touch-action: manipulation; cursor: pointer; padding: .75rem .8rem; }
+  .sim-item:hover { transform: none; }
+  .sim-grip { display: none; }
+  .sim-add { opacity: 1; width: 30px; height: 30px; font-size: 1.25rem; background: var(--teal); color: #fff; }
+  .sim-item:active:not(.is-picked) { background: color-mix(in srgb, var(--teal) 10%, #fff); border-color: var(--teal); }
+}
+@media (max-width: 860px) {
+  /* orden en celular: encabezado y formulario → seleccionados → contenidos → botones */
+  .sim-app { display: flex; flex-direction: column; gap: 0; }
+  .sim-right { display: contents; }
+  .sim-head-teal { order: 1; border-radius: 6px 6px 0 0; }
+  .sim-form { order: 2; }
+  .sim-drop { order: 3; margin: 0 0 12px; background: #f4f5f9; border-radius: 0 0 12px 12px; }
+  .sim-left { order: 4; }
+  .sim-bar { order: 5; margin: 12px 0 0; }
+}
+@media (max-width: 860px) {
+  .sim-done { position: fixed; inset: 0; z-index: 2250; border-radius: 0; background: rgba(238,240,246,.94); overflow: auto; }
+}
+
+/* Celular: botonera flotante, separada de los paneles, que acompaña el scroll */
+@media (max-width: 860px) {
+  .sim-bar {
+    position: sticky; bottom: 10px; z-index: 3;
+    order: 6; align-self: center; flex-wrap: nowrap; justify-content: center;
+    margin: 16px auto 0; padding: 7px; gap: 8px; border-radius: 999px;
+    box-shadow: 0 16px 34px -10px rgba(50,55,95,.55), 0 0 0 1px rgba(50,55,95,.06);
+  }
+  .sim-bar .sim-btn { flex: none; height: 46px; }
+  .sim-bar #simClear, .sim-bar #simPdf { width: 46px; padding: 0; }
+  .sim-bar #simClear .sim-btn-txt, .sim-bar #simPdf .sim-btn-txt { display: none; }
+  .sim-bar #simSave { padding: 0 1.1rem; }
+  .sim-toast { bottom: 96px; }
+}
